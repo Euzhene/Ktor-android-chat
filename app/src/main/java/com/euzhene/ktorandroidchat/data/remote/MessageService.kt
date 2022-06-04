@@ -6,7 +6,7 @@ interface MessageService {
     suspend fun getAllMessages():List<Message>
 
     companion object {
-        private const val BASE_URL ="http://172.26.192.1:8080"
+        private const val BASE_URL ="http://192.168.31.152:8080"
         const val MESSAGES_URL = "$BASE_URL/messages"
     }
 }
