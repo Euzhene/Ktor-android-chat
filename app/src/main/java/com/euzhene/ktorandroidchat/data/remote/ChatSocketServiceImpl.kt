@@ -4,6 +4,7 @@ import com.euzhene.ktorandroidchat.data.mapper.ChatMapper
 import com.euzhene.ktorandroidchat.data.remote.ChatSocketService.Companion.WEB_SOCKET_URL
 import com.euzhene.ktorandroidchat.data.remote.dto.MessageDto
 import com.euzhene.ktorandroidchat.domain.model.Message
+import com.euzhene.ktorandroidchat.domain.model.UserInfo
 import com.euzhene.ktorandroidchat.utils.Resource
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*
@@ -20,10 +21,10 @@ class ChatSocketServiceImpl @Inject constructor(
     private val mapper: ChatMapper
 ) : ChatSocketService {
     private var socket: WebSocketSession? = null
-    override suspend fun initSession(): Resource<Unit> {
+    override suspend fun initSession(userInfo: UserInfo): Resource<Unit> {
         return try {
             socket = client.webSocketSession {
-                url(WEB_SOCKET_URL)
+                url("$WEB_SOCKET_URL?login=${userInfo.login}&password=${userInfo.password}")
             }
             if (socket?.isActive == true) {
                 Resource.Success(Unit)
@@ -39,6 +40,7 @@ class ChatSocketServiceImpl @Inject constructor(
     override suspend fun sendMessage(message: String) {
         try {
             //why should we use frame.text instead of just send("string") ?
+            // because frame distinguishes types and it's convenient
             socket?.send(Frame.Text(message))
         } catch (e: Exception) {
             e.printStackTrace()
@@ -55,7 +57,7 @@ class ChatSocketServiceImpl @Inject constructor(
                     val json = (it as Frame.Text).readText() ?: ""
                     val dto = Json.decodeFromString<MessageDto>(json)
                     mapper.mapDtoToEntity(dto)
-                } ?: flow {  }
+                } ?: flow { }
         } catch (e: Exception) {
             e.printStackTrace()
             flow { }
