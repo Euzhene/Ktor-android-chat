@@ -1,7 +1,7 @@
 package com.euzhene.ktorandroidchat.data.remote
 
+import com.euzhene.ktorandroidchat.WEB_SOCKET_URL
 import com.euzhene.ktorandroidchat.data.mapper.ChatMapper
-import com.euzhene.ktorandroidchat.data.remote.ChatSocketService.Companion.WEB_SOCKET_URL
 import com.euzhene.ktorandroidchat.data.remote.dto.MessageDto
 import com.euzhene.ktorandroidchat.domain.model.Message
 import com.euzhene.ktorandroidchat.domain.model.UserInfo
@@ -37,13 +37,15 @@ class ChatSocketServiceImpl @Inject constructor(
         }
     }
 
-    override suspend fun sendMessage(message: String) {
-        try {
+    override suspend fun sendMessage(message: String):Resource<Unit> {
+        return try {
             //why should we use frame.text instead of just send("string") ?
             // because frame distinguishes types and it's convenient
             socket?.send(Frame.Text(message))
+            Resource.Success(Unit)
         } catch (e: Exception) {
             e.printStackTrace()
+            Resource.Error(message = e.localizedMessage ?: "Unknown error")
         }
 
     }
@@ -54,7 +56,7 @@ class ChatSocketServiceImpl @Inject constructor(
             socket?.incoming?.receiveAsFlow()
                 ?.filter { it is Frame.Text }
                 ?.map {
-                    val json = (it as Frame.Text).readText() ?: ""
+                    val json = (it as Frame.Text).readText()
                     val dto = Json.decodeFromString<MessageDto>(json)
                     mapper.mapDtoToEntity(dto)
                 } ?: flow { }
