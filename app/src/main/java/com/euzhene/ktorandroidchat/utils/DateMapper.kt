@@ -5,19 +5,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 fun toAMPMFieldDate(timestamp: Long): String {
-    val date = getDate(timestamp)
-    val sdf = SimpleDateFormat("HH:MM a", Locale.getDefault())
+    val date = Date(timestamp)
+    val sdf = SimpleDateFormat("hh:mm a", Locale.getDefault())
     return sdf.format(date)
 }
 
 fun toDefaultDate(timestamp: Long): String {
-    val date = getDate(timestamp)
+    val date = Date(timestamp)
     return DateFormat.getDateInstance().format(date)
 }
-
-private fun getDate(timestamp: Long): Date {
-    val timestampMillis = timestamp * MILLIS_IN_SECOND
-    return Date(timestampMillis)
-}
-
-private const val MILLIS_IN_SECOND = 1000
