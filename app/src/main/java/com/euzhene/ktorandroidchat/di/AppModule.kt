@@ -1,11 +1,7 @@
 package com.euzhene.ktorandroidchat.di
 
 import com.euzhene.ktorandroidchat.data.mapper.ChatMapper
-import com.euzhene.ktorandroidchat.data.remote.ChatSocketService
-import com.euzhene.ktorandroidchat.data.remote.ChatSocketServiceImpl
-import com.euzhene.ktorandroidchat.data.remote.MessageService
-import com.euzhene.ktorandroidchat.data.remote.MessageServiceImpl
-import dagger.Binds
+import com.euzhene.ktorandroidchat.data.remote.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,4 +37,8 @@ class AppModule {
     @Singleton
     fun provideChatSocketService(client: HttpClient, mapper: ChatMapper): ChatSocketService =
         ChatSocketServiceImpl(client, mapper)
+
+    @Provides
+    @Singleton
+    fun provideChatUserService(client: HttpClient):ChatUserService = ChatUserServiceImpl(client)
 }

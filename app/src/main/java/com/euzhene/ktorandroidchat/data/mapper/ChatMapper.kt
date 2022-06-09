@@ -7,7 +7,7 @@ import javax.inject.Inject
 class ChatMapper @Inject constructor() {
     fun mapDtoToEntity(messageDto: MessageDto) = Message(
         text = messageDto.text,
-        username = messageDto.text,
+        username = messageDto.username,
         timestamp = messageDto.timestamp
     )
 }

@@ -1,4 +1,4 @@
-package com.euzhene.ktorandroidchat
+package com.euzhene.ktorandroidchat.presentation
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
