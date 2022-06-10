@@ -4,8 +4,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.euzhene.ktorandroidchat.data.remote.ChatUserService
 import com.euzhene.ktorandroidchat.domain.model.UserInfo
+import com.euzhene.ktorandroidchat.domain.usecase.ChatUserUseCases
 import com.euzhene.ktorandroidchat.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AuthenticationViewModel @Inject constructor(
-    private val chatUserService: ChatUserService
+    private val chatUserUseCases: ChatUserUseCases,
 ) : ViewModel() {
 
     private val _loginText = mutableStateOf("")
@@ -60,7 +60,7 @@ class AuthenticationViewModel @Inject constructor(
                 passwordText.value,
                 usernameText.value
             )
-            when (val result = chatUserService.registerUser(userInfo)) {
+            when (val result = chatUserUseCases.registerUserUseCase(userInfo)) {
                 is Resource.Success -> _onJoinChat.emit(result.data!!)
                 is Resource.Error -> _toastEvent.emit(result.message ?: "Unknown error")
             }
@@ -73,7 +73,7 @@ class AuthenticationViewModel @Inject constructor(
                 val userInfo =
                     UserInfo(_loginText.value, _passwordText.value, _usernameText.value)
 
-                when (val userInfoRespond = chatUserService.getUserInfo(userInfo)) {
+                when (val userInfoRespond = chatUserUseCases.getUserInfoUseCase(userInfo)) {
                     is Resource.Success -> {
                         if (userInfoRespond.data == null) {
                             _toastEvent.emit("Incorrect login or password")
