@@ -2,6 +2,8 @@ package com.euzhene.ktorandroidchat.di
 
 import com.euzhene.ktorandroidchat.data.mapper.ChatMapper
 import com.euzhene.ktorandroidchat.data.remote.*
+import com.euzhene.ktorandroidchat.data.repository.MainRepositoryImpl
+import com.euzhene.ktorandroidchat.domain.repository.MainRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -40,5 +42,9 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideChatUserService(client: HttpClient):ChatUserService = ChatUserServiceImpl(client)
+    fun provideChatUserService(client: HttpClient): ChatUserService = ChatUserServiceImpl(client)
+
+    @Provides
+    @Singleton
+    fun provideMainRepository(impl: MainRepositoryImpl): MainRepository = impl
 }
