@@ -7,7 +7,9 @@ import com.euzhene.ktorandroidchat.domain.model.Message
 import com.euzhene.ktorandroidchat.domain.model.UserInfo
 import com.euzhene.ktorandroidchat.utils.Resource
 import io.ktor.client.*
+import io.ktor.client.features.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import javax.inject.Inject
 
 class MessageServiceImpl @Inject constructor(
@@ -22,6 +24,8 @@ class MessageServiceImpl @Inject constructor(
                         "&password=${userInfo.password}"
             ).map { mapper.mapDtoToEntity(it) }.asReversed()
             Resource.Success(messageList)
+        } catch (e: ClientRequestException) {
+            Resource.Error(message = e.response.readText())
         } catch (e: Exception) {
             Resource.Error(message = e.localizedMessage ?: "Unknown error")
         }

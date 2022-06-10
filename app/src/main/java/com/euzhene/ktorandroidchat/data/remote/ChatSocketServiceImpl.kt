@@ -7,8 +7,10 @@ import com.euzhene.ktorandroidchat.domain.model.Message
 import com.euzhene.ktorandroidchat.domain.model.UserInfo
 import com.euzhene.ktorandroidchat.utils.Resource
 import io.ktor.client.*
+import io.ktor.client.features.*
 import io.ktor.client.features.websocket.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.isActive
@@ -31,18 +33,22 @@ class ChatSocketServiceImpl @Inject constructor(
             } else {
                 Resource.Error("Connection failed")
             }
+        } catch (e: ClientRequestException) {
+            Resource.Error(message = e.response.readText())
         } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(message = e.localizedMessage ?: "Unknown error")
         }
     }
 
-    override suspend fun sendMessage(message: String):Resource<Unit> {
+    override suspend fun sendMessage(message: String): Resource<Unit> {
         return try {
             //why should we use frame.text instead of just send("string") ?
             // because frame distinguishes types and it's convenient
             socket?.send(Frame.Text(message))
             Resource.Success(Unit)
+        } catch (e: ClientRequestException) {
+            Resource.Error(message = e.response.readText())
         } catch (e: Exception) {
             e.printStackTrace()
             Resource.Error(message = e.localizedMessage ?: "Unknown error")
