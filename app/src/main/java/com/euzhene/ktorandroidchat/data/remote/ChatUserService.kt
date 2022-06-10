@@ -4,5 +4,6 @@ import com.euzhene.ktorandroidchat.domain.model.UserInfo
 import com.euzhene.ktorandroidchat.utils.Resource
 
 interface ChatUserService {
-    suspend fun getUserInfo(userInfo: UserInfo): Resource<UserInfo?>
+    suspend fun getUserInfo(userInfo: UserInfo): Resource<UserInfo>
+    suspend fun registerUser(userInfo: UserInfo):Resource<UserInfo>
 }
