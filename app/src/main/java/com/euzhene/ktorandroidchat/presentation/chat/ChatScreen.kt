@@ -91,6 +91,10 @@ fun ChatMessage(message: Message, username: String) {
         modifier = Modifier
             .fillMaxWidth()
     ) {
+        val color = if (username == message.username) Color.Green.copy(alpha = 0.7f) else Color.DarkGray
+        val alignment =
+            if (username == message.username) Alignment.CenterEnd else Alignment.CenterStart
+
         Column(modifier = Modifier
             .width(200.dp)
             .drawBehind {
@@ -112,17 +116,11 @@ fun ChatMessage(message: Message, username: String) {
                     }
                     close()
                 }
-                drawPath(
-                    trianglePath,
-                    if (username == message.username) Color.Green else Color.DarkGray
-                )
+                drawPath(trianglePath, color)
             }
-            .background(
-                if (username == message.username) Color.Green else Color.DarkGray,
-                shape = RoundedCornerShape(10.dp)
-            )
+            .background(color, shape = RoundedCornerShape(10.dp))
             .padding(8.dp)
-            .align(if (username == message.username) Alignment.CenterEnd else Alignment.CenterStart)
+            .align(alignment)
         ) {
             Text(
                 text = message.username,

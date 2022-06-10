@@ -1,6 +1,5 @@
 package com.euzhene.ktorandroidchat.presentation.authentication
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -13,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
